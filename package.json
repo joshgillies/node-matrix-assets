@@ -1,0 +1,36 @@
+{
+  "name": "node-matrix-assets",
+  "version": "1.0.0",
+  "description": "A DSL for creating Squiz Matrix asset trees in JavaScript!",
+  "main": "index.js",
+  "dependencies": {
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "standard": "^5.3.0",
+    "tape": "^4.2.0"
+  },
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshgillies/node-matrix-assets.git"
+  },
+  "keywords": [
+    "squiz",
+    "matrix",
+    "my",
+    "source",
+    "mysource",
+    "asset",
+    "assets",
+    "tree"
+  ],
+  "author": "Josh Gillies <npm@joshgilli.es> (http://joshgilli.es/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshgillies/node-matrix-assets/issues"
+  },
+  "homepage": "https://github.com/joshgillies/node-matrix-assets#readme"
+}
