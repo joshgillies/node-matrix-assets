@@ -31,4 +31,5 @@ function context () {
   return asset
 }
 
-module.exports = context()
+var asset = module.exports = context()
+asset.context = context

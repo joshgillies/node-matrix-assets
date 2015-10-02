@@ -1,17 +1,21 @@
-var asset = require('./')
 var test = require('tape')
 
 test('simple', function (assert) {
+  var asset = require('./').context()
+
   assert.plan(1)
   assert.deepEqual(asset('folder'), { type: 'folder' })
 })
 
 test('error if type is undefined', function (assert) {
+  var asset = require('./').context()
+
   assert.plan(1)
+
   try {
     asset()
   } catch (error) {
-    assert.ok(error)
+    assert.ok(error, 'got an error')
   }
 })
 
@@ -23,13 +27,17 @@ test('set asset properties', function (assert) {
     'pass opts object': { name: 'Sites', link: 'type_2' },
     'cannot override asset type with opts.type': { type: 'nope', name: 'Sites', link: 'type_2' }
   }
+  var asset
 
   for (test in tests) {
+    asset = require('./').context()
     assert.deepEqual(asset('folder', tests[test]), expected, test)
   }
 })
 
 test('create children assets', function (assert) {
+  var asset = require('./').context()
+
   assert.plan(1)
 
   var assets = {
