@@ -1,7 +1,8 @@
 var extend = require('xtend')
 
 function context () {
-  var assets = []
+  var _assets = []
+  var _ids = {}
 
   function asset (type, opts, children) {
     var asset = {}
@@ -12,20 +13,32 @@ function context () {
 
     asset.type = type
 
-    if (children && children.length && Array.isArray(children)) {
-      asset.children = children.map(function getChild (child) {
-        if (typeof child === 'function') {
-          return child()
-        }
-        return child
-      })
-    }
+    asset.key = _assets.length
 
     asset = extend(opts, asset)
 
-    assets.push(asset)
+    if (asset.id) {
+      _ids[asset.id] = asset.key
+    }
+
+    _assets.push(asset)
+
+    if (children && children.length && Array.isArray(children)) {
+      return extend(asset, {
+        children: children.map(function getChild (child) {
+          if (typeof child === 'function') {
+            child = child()
+          }
+          return child
+        })
+      })
+    }
 
     return asset
+  }
+
+  asset.getAssetById = function getAssetById (id) {
+    return _assets[_ids[id]]
   }
 
   return asset
