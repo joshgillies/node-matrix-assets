@@ -1,6 +1,19 @@
+var flat = require('flat')
+var flatten = flat.flatten
+var unflatten = flat.unflatten
 var extend = require('xtend')
+var mutate = require('xtend/mutable')
+
+function containsFunctions (obj) {
+  var flat = flatten(obj)
+
+  return Object.keys(flat).some(function (item) {
+    return typeof flat[item] === 'function'
+  })
+}
 
 function context () {
+  var _getAssetFuncs = []
   var _assets = []
   var _ids = {}
 
@@ -9,6 +22,10 @@ function context () {
 
     if (!type) {
       throw new Error('Asset type must be defined')
+    }
+
+    if (!opts) {
+      opts = {}
     }
 
     asset.type = type
@@ -22,6 +39,10 @@ function context () {
     }
 
     _assets.push(asset)
+
+    if (containsFunctions(opts)) {
+      _getAssetFuncs.push(asset.key)
+    }
 
     if (children && children.length && Array.isArray(children)) {
       return extend(asset, {
@@ -38,7 +59,25 @@ function context () {
   }
 
   asset.getAssetById = function getAssetById (id) {
-    return _assets[_ids[id]]
+    if (_assets[_ids[id]]) {
+      return _assets[_ids[id]]
+    }
+
+    return function returnAsset () {
+      return _assets[_ids[id]]
+    }
+  }
+
+  asset.finalize = function finalize () {
+    _getAssetFuncs.forEach(function getAssets (asset) {
+      var flat = flatten(_assets[asset])
+      Object.keys(flat).forEach(function (prop) {
+        if (typeof flat[prop] === 'function') {
+          flat[prop] = flat[prop]()
+        }
+      })
+      mutate(_assets[asset], unflatten(flat))
+    })
   }
 
   return asset

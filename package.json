@@ -4,6 +4,7 @@
   "description": "A DSL for creating Squiz Matrix asset trees in JavaScript!",
   "main": "index.js",
   "dependencies": {
+    "flat": "^1.6.0",
     "xtend": "^4.0.0"
   },
   "devDependencies": {

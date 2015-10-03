@@ -95,3 +95,55 @@ test('getAssetById returns selected asset', function (assert) {
   assert.deepEqual(test, expected, 'returns correct object')
   assert.notOk(test.children, 'children should be undefined')
 })
+
+test('getAssetById inline asset definition', function (assert) {
+  var asset = require('./').context()
+  var getAssetById = asset.getAssetById
+
+  assert.plan(1)
+
+  var assets = {
+    'folder': { name: 'Sites', link: 'type_2' },
+    'site': { id: 'site', name: 'My Site' },
+    'page_standard': { name: 'Home', link: { notice: { index: getAssetById('site') } } }
+  }
+  var expected = {
+    key: 2,
+    type: 'folder',
+    name: 'Sites',
+    link: 'type_2',
+    children: [
+      {
+        key: 1,
+        id: 'site',
+        type: 'site',
+        name: 'My Site',
+        children: [
+          {
+            key: 0,
+            type: 'page_standard',
+            name: 'Home',
+            link: {
+              notice: {
+                index: {
+                  id: 'site',
+                  name: 'My Site',
+                  type: 'site',
+                  key: 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  var test = asset('folder', assets['folder'], [
+    asset('site', assets['site'], [
+      asset('page_standard', assets['page_standard'])
+    ])
+  ])
+  asset.finalize()
+
+  assert.deepEqual(test, expected, 'processed children')
+})
