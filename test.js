@@ -167,7 +167,68 @@ test('getAssetById inline asset definition', function (assert) {
       asset('page_standard', assets['page_standard'])
     ])
   ])
-  asset.finalize()
+
+  assert.deepEqual(test, expected, 'processed children')
+})
+
+test('multiple getAssetById inline definitions', function (assert) {
+  var asset = require('./').context()
+  var getAssetById = asset.getAssetById
+
+  assert.plan(1)
+
+  var assets = {
+    'folder': { name: 'Sites', link: 'type_2' },
+    'site': { id: 'site', name: 'My Site', link: { notice: { 'some-reverse-link': getAssetById('home') } } },
+    'page_standard': { id: 'home', name: 'Home', link: { notice: { index: getAssetById('site') } } }
+  }
+  var expected = {
+    key: 2,
+    type: 'folder',
+    name: 'Sites',
+    link: 'type_2',
+    children: [
+      {
+        key: 1,
+        id: 'site',
+        type: 'site',
+        name: 'My Site',
+        link: {
+          notice: {
+            'some-reverse-link': {
+              id: 'home',
+              name: 'Home',
+              type: 'page_standard',
+              key: 0
+            }
+          }
+        },
+        children: [
+          {
+            key: 0,
+            id: 'home',
+            type: 'page_standard',
+            name: 'Home',
+            link: {
+              notice: {
+                index: {
+                  id: 'site',
+                  name: 'My Site',
+                  type: 'site',
+                  key: 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  var test = asset('folder', assets['folder'], [
+    asset('site', assets['site'], [
+      asset('page_standard', assets['page_standard'])
+    ])
+  ])
 
   assert.deepEqual(test, expected, 'processed children')
 })
