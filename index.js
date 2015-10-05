@@ -6,7 +6,7 @@ var mutate = require('xtend/mutable')
 var isArray = require('isarray')
 var isFn = require('is-fn')
 
-function containsFunctions (obj) {
+function containsFns (obj) {
   var flat = flatten(obj)
 
   return Object.keys(flat).some(function testFn (prop) {
@@ -15,7 +15,7 @@ function containsFunctions (obj) {
 }
 
 function context () {
-  var _getAssetFuncs = []
+  var _getAssetFns = []
   var _assets = []
   var _ids = {}
 
@@ -42,8 +42,8 @@ function context () {
 
     _assets.push(asset)
 
-    if (containsFunctions(opts)) {
-      _getAssetFuncs.push(asset.key)
+    if (containsFns(opts)) {
+      _getAssetFns.push(asset.key)
     }
 
     if (children && children.length && isArray(children)) {
@@ -71,7 +71,7 @@ function context () {
   }
 
   asset.finalize = function finalize () {
-    _getAssetFuncs.forEach(function getAssets (asset) {
+    _getAssetFns.forEach(function getAssets (asset) {
       var flat = flatten(_assets[asset])
       Object.keys(flat).forEach(function (prop) {
         if (typeof flat[prop] === 'function') {
