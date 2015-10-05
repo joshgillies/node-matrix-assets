@@ -1,4 +1,5 @@
 var test = require('tape')
+var isFn = require('is-fn')
 
 test('simple', function (assert) {
   var asset = require('./').context()
@@ -70,7 +71,7 @@ test('getAssetById returns selected asset', function (assert) {
   var asset = require('./').context()
   var getAssetById = asset.getAssetById
 
-  assert.plan(2)
+  assert.plan(16)
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
@@ -84,16 +85,39 @@ test('getAssetById returns selected asset', function (assert) {
     name: 'My Site'
   }
 
+  var testCallbackId = getAssetById('site')
+  var testCallbackKey = getAssetById(1)
+
+  assert.ok(isFn(testCallbackId), 'returns function if object not found via id')
+  assert.notOk(testCallbackId(), 'undefined if object not found via id')
+
+  assert.ok(isFn(testCallbackKey), 'returns function if object not found via key')
+  assert.notOk(testCallbackKey(), 'undefined if object not found via key')
+
   asset('folder', assets['folder'], [
     asset('site', assets['site'], [
       asset('page_standard', assets['page_standard'])
     ])
   ])
 
-  var test = getAssetById('site')
+  var testId = getAssetById('site')
+  var testKey = getAssetById(1)
 
-  assert.deepEqual(test, expected, 'returns correct object')
-  assert.notOk(test.children, 'children should be undefined')
+  assert.deepEqual(testCallbackId(), expected, 'callable returns correct object via id')
+  assert.notOk(testCallbackId().children, 'children should be undefined')
+  assert.notOk(testCallbackId().link, 'link should be undefined')
+
+  assert.deepEqual(testCallbackKey(), expected, 'callable returns correct object via key')
+  assert.notOk(testCallbackKey().children, 'children should be undefined')
+  assert.notOk(testCallbackKey().link, 'link should be undefined')
+
+  assert.deepEqual(testId, expected, 'returns correct object via id')
+  assert.notOk(testId.children, 'children should be undefined')
+  assert.notOk(testId.link, 'link should be undefined')
+
+  assert.deepEqual(testKey, expected, 'returns correct object via key')
+  assert.notOk(testKey.children, 'children should be undefined')
+  assert.notOk(testKey.link, 'link should be undefined')
 })
 
 test('getAssetById inline asset definition', function (assert) {

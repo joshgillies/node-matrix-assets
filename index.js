@@ -61,12 +61,16 @@ function context () {
   }
 
   asset.getAssetById = function getAssetById (id) {
+    if (_assets[id]) {
+      return _assets[id]
+    }
+
     if (_assets[_ids[id]]) {
       return _assets[_ids[id]]
     }
 
     return function returnAsset () {
-      return _assets[_ids[id]]
+      return _assets[_ids[id]] || _assets[id]
     }
   }
 
