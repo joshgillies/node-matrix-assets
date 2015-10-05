@@ -3,12 +3,14 @@ var flatten = flat.flatten
 var unflatten = flat.unflatten
 var extend = require('xtend')
 var mutate = require('xtend/mutable')
+var isArray = require('isarray')
+var isFn = require('is-fn')
 
 function containsFunctions (obj) {
   var flat = flatten(obj)
 
-  return Object.keys(flat).some(function (item) {
-    return typeof flat[item] === 'function'
+  return Object.keys(flat).some(function testFn (prop) {
+    return isFn(flat[prop])
   })
 }
 
@@ -44,10 +46,10 @@ function context () {
       _getAssetFuncs.push(asset.key)
     }
 
-    if (children && children.length && Array.isArray(children)) {
+    if (children && children.length && isArray(children)) {
       return extend(asset, {
         children: children.map(function getChild (child) {
-          if (typeof child === 'function') {
+          if (isFn(child)) {
             child = child()
           }
           return child
