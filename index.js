@@ -25,7 +25,7 @@ function context () {
     }
 
     _getAssetFns = _getAssetFns.filter(function getAssetFromId (id, index) {
-      var flat = flatten(_assets[id])
+      var flat = flatten(_assets[id], { maxDepth: 3 }) // maxDepth could cause problems in the future
       var assetRefUpdated
 
       Object.keys(flat).forEach(function getRef (prop) {
@@ -41,7 +41,9 @@ function context () {
 
           flat[prop] = asset
 
-          assetRefUpdated = true
+          if (!assetRefUpdated) {
+            assetRefUpdated = true
+          }
         }
       })
 
@@ -69,7 +71,18 @@ function context () {
 
     asset.key = _assets.length
 
-    asset = extend(opts, asset)
+    if (children && children.length && isArray(children)) {
+      asset = extend(opts, asset, {
+        children: children.map(function getChild (child) {
+          if (isFn(child)) {
+            child = child()
+          }
+          return child
+        })
+      })
+    } else {
+      asset = extend(opts, asset)
+    }
 
     if (asset.id) {
       _ids[asset.id] = asset.key
@@ -83,31 +96,23 @@ function context () {
 
     finalizeAssetRefs()
 
-    if (children && children.length && isArray(children)) {
-      return extend(asset, {
-        children: children.map(function getChild (child) {
-          if (isFn(child)) {
-            child = child()
-          }
-          return child
-        })
-      })
-    }
-
     return asset
   }
 
   asset.getAssetById = function getAssetById (id) {
-    if (_assets[id]) {
-      return _assets[id]
+    return getAssetFromCollection(id) || function futureAsset () {
+      return getAssetFromCollection(id)
     }
 
-    if (_assets[_ids[id]]) {
-      return _assets[_ids[id]]
-    }
+    function getAssetFromCollection (id) {
+      var asset = _assets[id] || _assets[_ids[id]]
+      if (asset) {
+        asset = extend({}, asset)
 
-    return function returnAsset () {
-      return _assets[_ids[id]] || _assets[id]
+        delete asset.children
+
+        return asset
+      }
     }
   }
 

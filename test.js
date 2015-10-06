@@ -232,3 +232,42 @@ test('multiple getAssetById inline definitions', function (assert) {
 
   assert.deepEqual(test, expected, 'processed children')
 })
+
+test('issue #1, getAssetById inline on asset with children', function (assert) {
+  var asset = require('./').context()
+  var getAssetById = asset.getAssetById
+
+  assert.plan(1)
+
+  var assets = {
+    'folder': { name: 'Sites', link: 'type_2' },
+    'site': { id: 'site', name: 'My Site' },
+    'page_standard': { id: 'home', name: 'Home', link: { notice: { index: getAssetById('site') } } },
+    'bodycopy': { link: 'type_2', dependant: '1', exclusive: '1' },
+    'bodycopy_div': { link: 'type_2', dependant: '1' },
+    'content_type_wysiwyg': { id: 'test', dependant: '1', exclusive: '1' }
+  }
+  var expected = {
+    notice: {
+      index: {
+        id: 'site',
+        name: 'My Site',
+        type: 'site',
+        key: 4
+      }
+    }
+  }
+  var test = asset('folder', assets['folder'], [
+    asset('site', assets['site'], [
+      asset('page_standard', assets['page_standard'], [
+        asset('bodycopy', assets['bodycopy'], [
+          asset('bodycopy_div', assets['bodycopy_div'], [
+            asset('content_type_wysiwyg', assets['content_type_wysiwyg'])
+          ])
+        ])
+      ])
+    ])
+  ])
+
+  assert.deepEqual(test.children[0].children[0].link, expected, 'correct link value')
+})
