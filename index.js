@@ -19,43 +19,6 @@ function context () {
   var _assets = []
   var _ids = {}
 
-  function finalizeAssetRefs () {
-    if (!_getAssetFns.length) {
-      return
-    }
-
-    _getAssetFns = _getAssetFns.filter(function getAssetFromId (id, index) {
-      var flat = flatten(_assets[id], { maxDepth: 3 }) // maxDepth could cause problems in the future
-      var assetRefUpdated
-
-      Object.keys(flat).forEach(function getRef (prop) {
-        var asset
-
-        if (isFn(flat[prop]) && (asset = flat[prop]())) {
-          asset = extend({}, asset)
-
-          // There's likely a better way to do this.
-          // But basically this to prevent deeply nested links of links
-          // in cases where assets link between one another.
-          delete asset.link
-
-          flat[prop] = asset
-
-          if (!assetRefUpdated) {
-            assetRefUpdated = true
-          }
-        }
-      })
-
-      if (assetRefUpdated) {
-        mutate(_assets[id], unflatten(flat))
-        return false
-      }
-
-      return true
-    })
-  }
-
   function asset (type, opts, children) {
     var asset = {}
 
@@ -116,9 +79,44 @@ function context () {
     }
   }
 
-  asset.finalize = finalizeAssetRefs
-
   return asset
+
+  function finalizeAssetRefs () {
+    if (!_getAssetFns.length) {
+      return
+    }
+
+    _getAssetFns = _getAssetFns.filter(function getAssetFromId (id, index) {
+      var flat = flatten(_assets[id], { maxDepth: 3 }) // maxDepth could cause problems in the future
+      var assetRefUpdated
+
+      Object.keys(flat).forEach(function getRef (prop) {
+        var asset
+
+        if (isFn(flat[prop]) && (asset = flat[prop]())) {
+          asset = extend({}, asset)
+
+          // There's likely a better way to do this.
+          // But basically this to prevent deeply nested links of links
+          // in cases where assets link between one another.
+          delete asset.link
+
+          flat[prop] = asset
+
+          if (!assetRefUpdated) {
+            assetRefUpdated = true
+          }
+        }
+      })
+
+      if (assetRefUpdated) {
+        mutate(_assets[id], unflatten(flat))
+        return false
+      }
+
+      return true
+    })
+  }
 }
 
 var asset = module.exports = context()
