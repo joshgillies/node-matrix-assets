@@ -62,22 +62,7 @@ function context () {
     return asset
   }
 
-  asset.getAssetById = function getAssetById (id) {
-    return getAssetFromCollection(id) || function futureAsset () {
-      return getAssetFromCollection(id)
-    }
-
-    function getAssetFromCollection (id) {
-      var asset = _assets[id] || _assets[_ids[id]]
-      if (asset) {
-        asset = extend({}, asset)
-
-        delete asset.children
-
-        return asset
-      }
-    }
-  }
+  asset.getAssetById = getAssetById
 
   return asset
 
@@ -87,7 +72,8 @@ function context () {
     }
 
     _getAssetFns = _getAssetFns.filter(function getAssetFromId (id, index) {
-      var flat = flatten(_assets[id], { maxDepth: 3 }) // maxDepth could cause problems in the future
+      var asset = getAssetById(id)
+      var flat = flatten(asset)
       var assetRefUpdated
 
       Object.keys(flat).forEach(function getRef (prop) {
@@ -116,6 +102,23 @@ function context () {
 
       return true
     })
+  }
+
+  function getAssetById (id) {
+    return getAssetFromCollection(id) || function futureAsset () {
+      return getAssetFromCollection(id)
+    }
+
+    function getAssetFromCollection (id) {
+      var asset = _assets[id] || _assets[_ids[id]]
+      if (asset) {
+        asset = extend({}, asset)
+
+        delete asset.children
+
+        return asset
+      }
+    }
   }
 }
 
