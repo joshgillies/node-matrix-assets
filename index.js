@@ -43,6 +43,12 @@ function context () {
           return child
         })
       })
+    } else if (children && children.type) {
+      asset = extend(opts, asset, {
+        children: [
+          children
+        ]
+      })
     } else {
       asset = extend(opts, asset)
     }

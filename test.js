@@ -39,9 +39,7 @@ test('set asset properties', function (assert) {
 })
 
 test('create children assets', function (assert) {
-  var asset = require('./').context()
-
-  assert.plan(1)
+  assert.plan(2)
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
@@ -60,11 +58,22 @@ test('create children assets', function (assert) {
       }
     ]
   }
-  var test = asset('folder', assets['folder'], [
-    asset('site', assets['site'])
-  ])
+  var tests = {
+    'processed children': function (asset) {
+      return asset('folder', assets['folder'], asset('site', assets['site']))
+    },
+    'processed children as array': function (asset) {
+      return asset('folder', assets['folder'], [
+        asset('site', assets['site'])
+      ])
+    }
+  }
+  var asset
 
-  assert.deepEqual(test, expected, 'processed children')
+  for (test in tests) {
+    asset = require('./').context()
+    assert.deepEqual(tests[test](asset), expected, test)
+  }
 })
 
 test('getAssetById returns selected asset', function (assert) {
