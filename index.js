@@ -6,14 +6,6 @@ var mutate = require('xtend/mutable')
 var isArray = require('isarray')
 var isFn = require('is-fn')
 
-function containsFns (obj) {
-  var flat = flatten(obj)
-
-  return Object.keys(flat).some(function testFn (prop) {
-    return isFn(flat[prop])
-  })
-}
-
 function context () {
   var _getAssetFns = []
   var _assets = []
@@ -118,6 +110,14 @@ function context () {
         return asset
       }
     }
+  }
+
+  function containsFns (obj) {
+    var flat = flatten(obj)
+
+    return Object.keys(flat).some(function testFn (prop) {
+      return isFn(flat[prop])
+    })
   }
 }
 
