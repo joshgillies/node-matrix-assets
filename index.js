@@ -34,20 +34,13 @@ function context () {
 
     asset.key = _assets.length
 
-    if (children && children.length && isArray(children)) {
+    if (!isArray(children)) {
+      children = [].slice.call(arguments, 2)
+    }
+
+    if (children && children.length) {
       asset = extend(opts, asset, {
-        children: children.map(function getChild (child) {
-          if (isFn(child)) {
-            child = child()
-          }
-          return child
-        })
-      })
-    } else if (children && children.type) {
-      asset = extend(opts, asset, {
-        children: [
-          children
-        ]
+        children: children
       })
     } else {
       asset = extend(opts, asset)

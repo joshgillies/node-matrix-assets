@@ -32,47 +32,88 @@ test('set asset properties', function (assert) {
   }
   var asset
 
-  for (test in tests) {
+  for (var test in tests) {
     asset = require('./').context()
     assert.deepEqual(asset('folder', tests[test]), expected, test)
   }
 })
 
 test('create children assets', function (assert) {
-  assert.plan(2)
+  assert.plan(3)
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
     'site': { name: 'My Site' }
   }
-  var expected = {
-    key: 1,
-    type: 'folder',
-    name: 'Sites',
-    link: 'type_2',
-    children: [
-      {
-        key: 0,
-        type: 'site',
-        name: 'My Site'
-      }
-    ]
-  }
+
   var tests = {
-    'processed children': function (asset) {
-      return asset('folder', assets['folder'], asset('site', assets['site']))
+    'processed children': {
+      test: function (asset) {
+        return asset('folder', assets['folder'], asset('site', assets['site']))
+      },
+      expected: {
+        key: 1,
+        type: 'folder',
+        name: 'Sites',
+        link: 'type_2',
+        children: [
+          {
+            key: 0,
+            type: 'site',
+            name: 'My Site'
+          }
+        ]
+      }
     },
-    'processed children as array': function (asset) {
-      return asset('folder', assets['folder'], [
-        asset('site', assets['site'])
-      ])
+    'processed children as multiple arguments': {
+      test: function (asset) {
+        return asset('folder', assets['folder'], asset('site', assets['site']), asset('site', assets['site']))
+      },
+      expected: {
+        key: 2,
+        type: 'folder',
+        name: 'Sites',
+        link: 'type_2',
+        children: [
+          {
+            key: 0,
+            type: 'site',
+            name: 'My Site'
+          },
+          {
+            key: 1,
+            type: 'site',
+            name: 'My Site'
+          }
+        ]
+      }
+    },
+    'processed children as array': {
+      test: function (asset) {
+        return asset('folder', assets['folder'], [
+          asset('site', assets['site'])
+        ])
+      },
+      expected: {
+        key: 1,
+        type: 'folder',
+        name: 'Sites',
+        link: 'type_2',
+        children: [
+          {
+            key: 0,
+            type: 'site',
+            name: 'My Site'
+          }
+        ]
+      }
     }
   }
   var asset
 
-  for (test in tests) {
+  for (var test in tests) {
     asset = require('./').context()
-    assert.deepEqual(tests[test](asset), expected, test)
+    assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
   }
 })
 
