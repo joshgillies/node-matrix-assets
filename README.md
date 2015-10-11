@@ -13,18 +13,19 @@ A DSL for creating Squiz Matrix asset trees in JavaScript!
 
 ```js
 var asset = require('node-matrix-assets')
+var getAssetById = asset.getAssetById
 
-var tree = asset('folder', { name: 'Sites', link: 'type_2' }, [
-  asset('site', { name: 'My Site' }, [
-    asset('page_standard', { name: 'Home' }, [
-      asset('bodycopy', { link: 'type_2', dependant: '1', exclusive: '1' }, [
-        asset('bodycopy_div', { link: 'type_2', dependant: '1' }, [
+var tree = asset('folder', { name: 'Sites', link: 'type_2' },
+  asset('site', { id: 'site', name: 'My Site' },
+    asset('page_standard', { name: 'Home', link: { index: getAssetById('site') } },
+      asset('bodycopy', { link: 'type_2', dependant: '1', exclusive: '1' },
+        asset('bodycopy_div', { link: 'type_2', dependant: '1' },
           asset('content_type_wysiwyg', { link: 'type_2', dependant: '1', exclusive: '1' })
-        ])
-      ])
-    ])
-  ])
-])
+        )
+      )
+    )
+  )
+)
 ```
 
 ## License
