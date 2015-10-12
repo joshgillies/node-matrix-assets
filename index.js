@@ -99,16 +99,16 @@ function context () {
     return getAssetFromCollection(id) || function futureAsset () {
       return getAssetFromCollection(id)
     }
+  }
 
-    function getAssetFromCollection (id) {
-      var asset = _assets[id] || _assets[_ids[id]]
-      if (asset) {
-        asset = extend({}, asset)
+  function getAssetFromCollection (id) {
+    var asset = _assets[id] || _assets[_ids[id]]
+    if (asset) {
+      asset = extend({}, asset)
 
-        delete asset.children
+      delete asset.children
 
-        return asset
-      }
+      return asset
     }
   }
 
