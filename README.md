@@ -28,6 +28,48 @@ var tree = asset('folder', { name: 'Sites', link: 'type_2' },
 )
 ```
 
+## API
+
+### asset
+
+`node-matrix-assets` provides an API for generating structured asset trees via `require('node-matrix-assets')`.
+
+#### asset(type, properties={}, children...)
+
+The `type` argument is _required_ and accepts a string representing a valid Squiz Matrix asset type.
+
+The `properties` argument accepts an object used to configure the returned asset definition.
+
+With the exception of a few optional special cases for the `properties` object:
+
+  * `properties.id`: Assigns a unique identifier to an asset. Typically used in conjunction with [asset.getAssetById].
+
+the `properties` objects keys will change depending on the type of asset you're creating.
+
+Defining `children` is accomplished through one of the following:
+
+  * As an array containing assets `asset('type_code', [asset(...), asset(...), asset(...)])`,
+  * or as arguments `asset('type_code', asset(...), asset(...), asset(...))`.
+
+#### asset.getAssetById(id)
+[asset.getAssetById]: '#asset.getAssetById(id)'
+
+The `id` argument accepts a string representing a previously defined asset `property.id`:
+
+```js
+var myThing = asset('type_code', { id: 'myThing' })
+
+asset.getAssetById('myThing')
+```
+
+or a `key` representing a valid asset key:
+
+```js
+var myThing = asset('type_code')
+
+asset.getAssetById(myThing.key)
+```
+
 ## License
 
 MIT
