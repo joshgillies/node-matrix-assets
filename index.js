@@ -13,6 +13,7 @@ function context () {
 
   function asset (type, opts, children) {
     var asset = {}
+    var link = {}
 
     if (!type) {
       throw new Error('Asset type must be defined')
@@ -20,6 +21,12 @@ function context () {
 
     if (!opts) {
       opts = {}
+    }
+
+    // 'type_1' || [ 'type_1' ] || { type_1: true } || { type_1: 'value' }
+
+    if (!opts.link || opts.link === 'type_1' || opts.link.type_1) {
+      link['type_1'] = true
     }
 
     asset.type = type
