@@ -4,6 +4,7 @@ var unflatten = flat.unflatten
 var extend = require('xtend')
 var mutate = require('xtend/mutable')
 var isArray = require('isarray')
+var isObject = require('isobject')
 var isFn = require('is-fn')
 
 function context () {
@@ -13,7 +14,6 @@ function context () {
 
   function asset (type, opts, children) {
     var asset = {}
-    var link = {}
 
     if (!type) {
       throw new Error('Asset type must be defined')
@@ -23,15 +23,29 @@ function context () {
       opts = {}
     }
 
-    // 'type_1' || [ 'type_1' ] || { type_1: true } || { type_1: 'value' }
-
-    if (!opts.link || opts.link === 'type_1' || opts.link.type_1) {
-      link['type_1'] = true
-    }
-
     asset.type = type
 
     asset.key = _assets.length
+
+    asset.link = {}
+
+    if (!opts.link) {
+      asset.link['type_1'] = true
+    }
+
+    if (typeof opts.link === 'string') {
+      asset.link[opts.link] = true
+    } else if (isArray(opts.link)) {
+      for (var i = 0; i < opts.link.length; i++) {
+        if (typeof opts.link[i] === 'string') {
+          asset.link[opts.link[i]] = true
+        } else if (isObject(opts.link[i])) {
+          mutate(asset.link, opts.link[i])
+        }
+      }
+    } else if (isObject(opts.link)) {
+      mutate(asset.link, opts.link)
+    }
 
     if (!isArray(children)) {
       children = [].slice.call(arguments, 2)
