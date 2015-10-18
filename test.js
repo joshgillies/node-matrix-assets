@@ -6,7 +6,7 @@ test('simple', function (assert) {
 
   assert.plan(1)
 
-  assert.deepEqual(asset('folder'), { key: 0, type: 'folder' })
+  assert.deepEqual(asset('folder'), { key: 0, type: 'folder', link: { type_1: true } })
 })
 
 test('error if type is undefined', function (assert) {
@@ -24,7 +24,7 @@ test('error if type is undefined', function (assert) {
 test('set asset properties', function (assert) {
   assert.plan(3)
 
-  var expected = { key: 0, type: 'folder', name: 'Sites', link: 'type_2' }
+  var expected = { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
   var tests = {
     'pass opts object': { name: 'Sites', link: 'type_2' },
     'cannot override asset type with opts.type': { type: 'nope', name: 'Sites', link: 'type_2' },
@@ -35,6 +35,55 @@ test('set asset properties', function (assert) {
   for (var test in tests) {
     asset = require('./').context()
     assert.deepEqual(asset('folder', tests[test]), expected, test)
+  }
+})
+
+test('set asset link(s)', function (assert) {
+  var tests = {
+    'default case': {
+      test: function (asset) {
+        return asset('folder', { name: 'Sites' })
+      },
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_1: true } }
+    },
+    'string case': {
+      test: function (asset) {
+        return asset('folder', { name: 'Sites', link: 'type_2' })
+      },
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
+    },
+    'array case with string': {
+      test: function (asset) {
+        return asset('folder', { name: 'Sites', link: [ 'type_2' ] })
+      },
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
+    },
+    'array case with object': {
+      test: function (asset) {
+        return asset('folder', { name: 'sites', link: [ { type_2: true } ] })
+      },
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true } }
+    },
+    'array case mixed': {
+      test: function (asset) {
+        return asset('folder', { name: 'sites', link: [ 'type_2', { index: 'site' } ] })
+      },
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' } }
+    },
+    'object case': {
+      test: function (asset) {
+        return asset('folder', { name: 'sites', link: { type_2: true, index: 'site' } })
+      },
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' } }
+    }
+  }
+  var asset
+
+  assert.plan(6)
+
+  for (var test in tests) {
+    asset = require('./').context()
+    assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
   }
 })
 
@@ -55,12 +104,17 @@ test('create children assets', function (assert) {
         key: 1,
         type: 'folder',
         name: 'Sites',
-        link: 'type_2',
+        link: {
+          type_2: true
+        },
         children: [
           {
             key: 0,
             type: 'site',
-            name: 'My Site'
+            name: 'My Site',
+            link: {
+              type_1: true
+            }
           }
         ]
       }
@@ -73,17 +127,25 @@ test('create children assets', function (assert) {
         key: 2,
         type: 'folder',
         name: 'Sites',
-        link: 'type_2',
+        link: {
+          type_2: true
+        },
         children: [
           {
             key: 0,
             type: 'site',
-            name: 'My Site'
+            name: 'My Site',
+            link: {
+              type_1: true
+            }
           },
           {
             key: 1,
             type: 'site',
-            name: 'My Site'
+            name: 'My Site',
+            link: {
+              type_1: true
+            }
           }
         ]
       }
@@ -98,12 +160,17 @@ test('create children assets', function (assert) {
         key: 1,
         type: 'folder',
         name: 'Sites',
-        link: 'type_2',
+        link: {
+          type_2: true
+        },
         children: [
           {
             key: 0,
             type: 'site',
-            name: 'My Site'
+            name: 'My Site',
+            link: {
+              type_1: true
+            }
           }
         ]
       }
@@ -121,7 +188,7 @@ test('getAssetById returns selected asset', function (assert) {
   var asset = require('./').context()
   var getAssetById = asset.getAssetById
 
-  assert.plan(16)
+  assert.plan(12)
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
@@ -132,7 +199,10 @@ test('getAssetById returns selected asset', function (assert) {
     key: 1,
     id: 'site',
     type: 'site',
-    name: 'My Site'
+    name: 'My Site',
+    link: {
+      type_1: true
+    }
   }
 
   var testCallbackId = getAssetById('site')
@@ -155,19 +225,15 @@ test('getAssetById returns selected asset', function (assert) {
 
   assert.deepEqual(testCallbackId(), expected, 'callable returns correct object via id')
   assert.notOk(testCallbackId().children, 'children should be undefined')
-  assert.notOk(testCallbackId().link, 'link should be undefined')
 
   assert.deepEqual(testCallbackKey(), expected, 'callable returns correct object via key')
   assert.notOk(testCallbackKey().children, 'children should be undefined')
-  assert.notOk(testCallbackKey().link, 'link should be undefined')
 
   assert.deepEqual(testId, expected, 'returns correct object via id')
   assert.notOk(testId.children, 'children should be undefined')
-  assert.notOk(testId.link, 'link should be undefined')
 
   assert.deepEqual(testKey, expected, 'returns correct object via key')
   assert.notOk(testKey.children, 'children should be undefined')
-  assert.notOk(testKey.link, 'link should be undefined')
 })
 
 test('getAssetById inline asset definition', function (assert) {
@@ -179,32 +245,36 @@ test('getAssetById inline asset definition', function (assert) {
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
     'site': { id: 'site', name: 'My Site' },
-    'page_standard': { name: 'Home', link: { notice: { index: getAssetById('site') } } }
+    'page_standard': { name: 'Home', link: { index: getAssetById('site') } }
   }
   var expected = {
     key: 2,
     type: 'folder',
     name: 'Sites',
-    link: 'type_2',
+    link: {
+      type_2: true
+    },
     children: [
       {
         key: 1,
         id: 'site',
         type: 'site',
         name: 'My Site',
+        link: {
+          type_1: true
+        },
         children: [
           {
             key: 0,
             type: 'page_standard',
             name: 'Home',
             link: {
-              notice: {
-                index: {
-                  id: 'site',
-                  name: 'My Site',
-                  type: 'site',
-                  key: 1
-                }
+              type_1: true,
+              index: {
+                id: 'site',
+                name: 'My Site',
+                type: 'site',
+                key: 1
               }
             }
           }
@@ -229,14 +299,16 @@ test('multiple getAssetById inline definitions', function (assert) {
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
-    'site': { id: 'site', name: 'My Site', link: { notice: { 'some-reverse-link': getAssetById('home') } } },
-    'page_standard': { id: 'home', name: 'Home', link: { notice: { index: getAssetById('site') } } }
+    'site': { id: 'site', name: 'My Site', link: { 'some-reverse-link': getAssetById('home') } },
+    'page_standard': { id: 'home', name: 'Home', link: { index: getAssetById('site') } }
   }
   var expected = {
     key: 2,
     type: 'folder',
     name: 'Sites',
-    link: 'type_2',
+    link: {
+      type_2: true
+    },
     children: [
       {
         key: 1,
@@ -244,13 +316,12 @@ test('multiple getAssetById inline definitions', function (assert) {
         type: 'site',
         name: 'My Site',
         link: {
-          notice: {
-            'some-reverse-link': {
-              id: 'home',
-              name: 'Home',
-              type: 'page_standard',
-              key: 0
-            }
+          type_1: true,
+          'some-reverse-link': {
+            id: 'home',
+            name: 'Home',
+            type: 'page_standard',
+            key: 0
           }
         },
         children: [
@@ -260,13 +331,12 @@ test('multiple getAssetById inline definitions', function (assert) {
             type: 'page_standard',
             name: 'Home',
             link: {
-              notice: {
-                index: {
-                  id: 'site',
-                  name: 'My Site',
-                  type: 'site',
-                  key: 1
-                }
+              type_1: true,
+              index: {
+                id: 'site',
+                name: 'My Site',
+                type: 'site',
+                key: 1
               }
             }
           }
@@ -292,19 +362,18 @@ test('issue #1, getAssetById inline on asset with children', function (assert) {
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
     'site': { id: 'site', name: 'My Site' },
-    'page_standard': { id: 'home', name: 'Home', link: { notice: { index: getAssetById('site') } } },
+    'page_standard': { id: 'home', name: 'Home', link: { index: getAssetById('site') } },
     'bodycopy': { link: 'type_2', dependant: '1', exclusive: '1' },
     'bodycopy_div': { link: 'type_2', dependant: '1' },
     'content_type_wysiwyg': { id: 'test', dependant: '1', exclusive: '1' }
   }
   var expected = {
-    notice: {
-      index: {
-        id: 'site',
-        name: 'My Site',
-        type: 'site',
-        key: 4
-      }
+    type_1: true,
+    index: {
+      id: 'site',
+      name: 'My Site',
+      type: 'site',
+      key: 4
     }
   }
   var test = asset('folder', assets['folder'], [

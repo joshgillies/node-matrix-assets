@@ -29,15 +29,11 @@ function context () {
 
     asset.link = {}
 
-    if (!opts.link) {
-      asset.link['type_1'] = true
-    }
-
-    if (typeof opts.link === 'string') {
+    if (isString(opts.link)) {
       asset.link[opts.link] = true
     } else if (isArray(opts.link)) {
       for (var i = 0; i < opts.link.length; i++) {
-        if (typeof opts.link[i] === 'string') {
+        if (isString(opts.link[i])) {
           asset.link[opts.link[i]] = true
         } else if (isObject(opts.link[i])) {
           mutate(asset.link, opts.link[i])
@@ -45,6 +41,10 @@ function context () {
       }
     } else if (isObject(opts.link)) {
       mutate(asset.link, opts.link)
+    }
+
+    if (!(asset.link.type_1 || asset.link.type_2 || asset.link.type_3)) {
+      asset.link['type_1'] = true
     }
 
     if (!isArray(children)) {
@@ -139,6 +139,10 @@ function context () {
     return Object.keys(flat).some(function testFn (prop) {
       return isFn(flat[prop])
     })
+  }
+
+  function isString (str) {
+    return typeof str === 'string'
   }
 }
 
