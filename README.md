@@ -40,18 +40,18 @@ The `type` argument is _required_ and accepts a string representing a valid Squi
 
 The `properties` argument accepts an object used to configure the returned asset definition.
 
-With the exception of a few optional special cases for the `properties` object:
+With the exception of a few optional special cases for the `properties` objects
+keys/values will change depending on the type of asset you're creating.
 
-##### properties.id
+#### properties.id
 
 Assigns a unique identifier to an asset. Typically used in conjunction with [asset.getAssetById].
-##### properties.link
+
+#### properties.link
 
 Default: `'type_1'`. Either a string representing a valid link type (eg. `'type_2'`),
 an Array containing String or Object key/value pairs `['type_2', { notice: 'value' }]`,
 or an Object of key/value pairs `{ type_2: true, notice: 'value' }`.
-
-the `properties` objects keys will change depending on the type of asset you're creating.
 
 Defining `children` is accomplished through one of the following:
 
