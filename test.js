@@ -38,6 +38,15 @@ test('set asset properties', function (assert) {
   }
 })
 
+test('set asset permissions', function (assert) {
+  assert.plan(1)
+
+  var expected = { key: 0, type: 'folder', link: { type_1: true }, permissions: { public: ['read', 'write', 'admin'] } }
+  var asset = require('./').context()
+
+  assert.deepEqual(asset('folder', { permissions: { public: ['read', 'write', 'admin'] } }), expected, test)
+})
+
 test('set asset link(s)', function (assert) {
   var tests = {
     'default case': {
