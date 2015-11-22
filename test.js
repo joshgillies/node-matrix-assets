@@ -39,12 +39,34 @@ test('set asset properties', function (assert) {
 })
 
 test('set asset permissions', function (assert) {
-  assert.plan(1)
+  var tests = {
+    'default case': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test' })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    },
+    'allow short-hand, single value': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: '7' } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    },
+    'allow short-hand, Array value': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: ['7', '8'] } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7', '8'] } } }
+    }
+  }
+  var asset
 
-  var expected = { key: 0, type: 'folder', link: { type_1: true }, permissions: { public: ['read', 'write', 'admin'] } }
-  var asset = require('./').context()
+  assert.plan(3)
 
-  assert.deepEqual(asset('folder', { permissions: { public: ['read', 'write', 'admin'] } }), expected, test)
+  for (var test in tests) {
+    asset = require('./').context()
+    assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
+  }
 })
 
 test('set asset link(s)', function (assert) {
