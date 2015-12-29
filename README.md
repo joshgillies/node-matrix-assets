@@ -2,6 +2,8 @@
 
 A DSL for creating Squiz Matrix asset trees in JavaScript!
 
+Inspiration for this module is weighted heavily around the excellent work by [Dominic Tarr] with [hyperscript].
+
 [![Build Status](https://travis-ci.org/joshgillies/node-matrix-assets.svg)](https://travis-ci.org/joshgillies/node-matrix-assets)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
@@ -80,3 +82,6 @@ asset.getAssetById(myThing.key)
 ## License
 
 MIT
+
+[Dominic Tarr]: https://github.com/dominictarr
+[hyperscript]: https://github.com/dominictarr/hyperscript
