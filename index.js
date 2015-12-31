@@ -29,6 +29,8 @@ function context () {
 
     asset.link = {}
 
+    asset.permissions = {}
+
     if (isString(opts.link)) {
       asset.link[opts.link] = true
     } else if (isArray(opts.link)) {
@@ -45,6 +47,12 @@ function context () {
 
     if (!(asset.link.type_1 || asset.link.type_2 || asset.link.type_3)) {
       asset.link['type_1'] = true
+    }
+
+    if (!asset.permissions.read) {
+      asset.permissions.read = {
+        allow: ['7']
+      }
     }
 
     if (!isArray(children)) {
@@ -98,6 +106,7 @@ function context () {
           // But basically this to prevent deeply nested links of links
           // in cases where assets link between one another.
           delete asset.link
+          delete asset.permissions
 
           flat[prop] = asset
 

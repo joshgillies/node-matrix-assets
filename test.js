@@ -6,7 +6,7 @@ test('simple', function (assert) {
 
   assert.plan(1)
 
-  assert.deepEqual(asset('folder'), { key: 0, type: 'folder', link: { type_1: true } })
+  assert.deepEqual(asset('folder'), { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } } })
 })
 
 test('error if type is undefined', function (assert) {
@@ -24,7 +24,7 @@ test('error if type is undefined', function (assert) {
 test('set asset properties', function (assert) {
   assert.plan(3)
 
-  var expected = { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
+  var expected = { key: 0, type: 'folder', name: 'Sites', link: { type_2: true }, permissions: { read: { allow: ['7'] } } }
   var tests = {
     'pass opts object': { name: 'Sites', link: 'type_2' },
     'cannot override asset type with opts.type': { type: 'nope', name: 'Sites', link: 'type_2' },
@@ -75,37 +75,37 @@ test('set asset link(s)', function (assert) {
       test: function (asset) {
         return asset('folder', { name: 'Sites' })
       },
-      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_1: true } }
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     },
     'string case': {
       test: function (asset) {
         return asset('folder', { name: 'Sites', link: 'type_2' })
       },
-      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true }, permissions: { read: { allow: ['7'] } } }
     },
     'array case with string': {
       test: function (asset) {
         return asset('folder', { name: 'Sites', link: [ 'type_2' ] })
       },
-      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true } }
+      expected: { key: 0, type: 'folder', name: 'Sites', link: { type_2: true }, permissions: { read: { allow: ['7'] } } }
     },
     'array case with object': {
       test: function (asset) {
         return asset('folder', { name: 'sites', link: [ { type_2: true } ] })
       },
-      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true } }
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true }, permissions: { read: { allow: ['7'] } } }
     },
     'array case mixed': {
       test: function (asset) {
         return asset('folder', { name: 'sites', link: [ 'type_2', { index: 'site' } ] })
       },
-      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' } }
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' }, permissions: { read: { allow: ['7'] } } }
     },
     'object case': {
       test: function (asset) {
         return asset('folder', { name: 'sites', link: { type_2: true, index: 'site' } })
       },
-      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' } }
+      expected: { key: 0, type: 'folder', name: 'sites', link: { type_2: true, index: 'site' }, permissions: { read: { allow: ['7'] } } }
     }
   }
   var asset
@@ -145,9 +145,9 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }
+            }, permissions: { read: { allow: ['7'] } }
           }
-        ]
+        ], permissions: { read: { allow: ['7'] } }
       }
     },
     'processed children as multiple arguments': {
@@ -168,7 +168,7 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }
+            }, permissions: { read: { allow: ['7'] } }
           },
           {
             key: 1,
@@ -176,9 +176,9 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }
+            }, permissions: { read: { allow: ['7'] } }
           }
-        ]
+        ], permissions: { read: { allow: ['7'] } }
       }
     },
     'processed children as array': {
@@ -201,9 +201,9 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }
+            }, permissions: { read: { allow: ['7'] } }
           }
-        ]
+        ], permissions: { read: { allow: ['7'] } }
       }
     }
   }
@@ -233,7 +233,7 @@ test('getAssetById returns selected asset', function (assert) {
     name: 'My Site',
     link: {
       type_1: true
-    }
+    }, permissions: { read: { allow: ['7'] } }
   }
 
   var testCallbackId = getAssetById('site')
@@ -307,11 +307,26 @@ test('getAssetById inline asset definition', function (assert) {
                 type: 'site',
                 key: 1
               }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
             }
           }
-        ]
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
       }
-    ]
+    ],
+    permissions: {
+      read: {
+        allow: ['7']
+      }
+    }
   }
   var test = asset('folder', assets['folder'], [
     asset('site', assets['site'], [
@@ -369,11 +384,20 @@ test('multiple getAssetById inline definitions', function (assert) {
                 type: 'site',
                 key: 1
               }
-            }
+            }, permissions: { read: { allow: ['7'] } }
           }
-        ]
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
       }
-    ]
+    ], permissions: {
+      read: {
+        allow: ['7']
+      }
+    }
   }
   var test = asset('folder', assets['folder'], [
     asset('site', assets['site'], [
