@@ -49,6 +49,20 @@ function context () {
       asset.link['type_1'] = true
     }
 
+    if (isObject(opts.permissions)) {
+      Object.keys(opts.permissions).forEach(function (permission) {
+        if (isString(opts.permissions[permission])) {
+          asset.permissions[permission] = {
+            allow: [opts.permissions[permission]]
+          }
+        } else if (isArray(opts.permissions[permission])) {
+          asset.permissions[permission] = {
+            allow: opts.permissions[permission].slice()
+          }
+        }
+      })
+    }
+
     if (!asset.permissions.read) {
       asset.permissions.read = {
         allow: ['7']
