@@ -57,11 +57,23 @@ test('set asset permissions', function (assert) {
         return asset('folder', { name: 'Test', permissions: { read: ['7', '8'] } })
       },
       expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7', '8'] } } }
+    },
+    'explicit allow/deny as Object': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: { allow: ['7', '8'], deny: '9' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7', '8'], deny: ['9'] } } }
+    },
+    'cannot set allow and deny on the same value': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: { allow: '7', deny: '7' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     }
   }
   var asset
 
-  assert.plan(3)
+  assert.plan(4)
 
   for (var test in tests) {
     asset = require('./').context()
