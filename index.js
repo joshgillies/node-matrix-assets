@@ -59,6 +59,8 @@ function context () {
           asset.permissions[permission] = {
             allow: opts.permissions[permission].slice()
           }
+        } else if (isObject(opts.permissions[permission])) {
+          asset.permissions[permission] = opts.permissions[permission]
         }
       })
     }
