@@ -157,9 +157,19 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }, permissions: { read: { allow: ['7'] } }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
           }
-        ], permissions: { read: { allow: ['7'] } }
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
       }
     },
     'processed children as multiple arguments': {
@@ -180,7 +190,12 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }, permissions: { read: { allow: ['7'] } }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
           },
           {
             key: 1,
@@ -188,9 +203,19 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }, permissions: { read: { allow: ['7'] } }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
           }
-        ], permissions: { read: { allow: ['7'] } }
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
       }
     },
     'processed children as array': {
@@ -213,9 +238,19 @@ test('create children assets', function (assert) {
             name: 'My Site',
             link: {
               type_1: true
-            }, permissions: { read: { allow: ['7'] } }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
           }
-        ], permissions: { read: { allow: ['7'] } }
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
       }
     }
   }
@@ -245,7 +280,12 @@ test('getAssetById returns selected asset', function (assert) {
     name: 'My Site',
     link: {
       type_1: true
-    }, permissions: { read: { allow: ['7'] } }
+    },
+    permissions: {
+      read: {
+        allow: ['7']
+      }
+    }
   }
 
   var testCallbackId = getAssetById('site')
@@ -396,7 +436,12 @@ test('multiple getAssetById inline definitions', function (assert) {
                 type: 'site',
                 key: 1
               }
-            }, permissions: { read: { allow: ['7'] } }
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
           }
         ],
         permissions: {
