@@ -73,7 +73,7 @@ test('set asset permissions', function (assert) {
   }
   var asset
 
-  assert.plan(4)
+  assert.plan(5)
 
   for (var test in tests) {
     asset = require('./').context()

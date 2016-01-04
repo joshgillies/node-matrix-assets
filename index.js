@@ -60,7 +60,15 @@ function context () {
             allow: opts.permissions[permission].slice()
           }
         } else if (isObject(opts.permissions[permission])) {
-          asset.permissions[permission] = opts.permissions[permission]
+          asset.permissions[permission] = {}
+          if (opts.permissions[permission].allow) {
+            asset.permissions[permission].allow = isString(opts.permissions[permission].allow)
+              ? [opts.permissions[permission].allow] : opts.permissions[permission].allow.slice()
+          }
+          if (opts.permissions[permission].deny) {
+            asset.permissions[permission].deny = isString(opts.permissions[permission].deny)
+              ? [opts.permissions[permission].deny] : opts.permissions[permission].deny.slice()
+          }
         }
       })
     }
