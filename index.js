@@ -7,6 +7,8 @@ var isArray = require('isarray')
 var isObject = require('isobject')
 var isFn = require('is-fn')
 
+var PUBLIC_USER = '7'
+
 function context () {
   var _getAssetFns = []
   var _assets = []
@@ -50,24 +52,43 @@ function context () {
     }
 
     if (isObject(opts.permissions)) {
-      Object.keys(opts.permissions).forEach(function (permission) {
-        if (isString(opts.permissions[permission])) {
+      Object.keys(opts.permissions).forEach(function setPermission (permission) {
+        if (isArray(opts.permissions[permission])) {
           asset.permissions[permission] = {
-            allow: [opts.permissions[permission]]
-          }
-        } else if (isArray(opts.permissions[permission])) {
-          asset.permissions[permission] = {
-            allow: opts.permissions[permission].slice()
+            allow: opts.permissions[permission].slice().map(String)
           }
         } else if (isObject(opts.permissions[permission])) {
           asset.permissions[permission] = {}
           if (opts.permissions[permission].allow) {
             asset.permissions[permission].allow = isString(opts.permissions[permission].allow)
-              ? [opts.permissions[permission].allow] : opts.permissions[permission].allow.slice()
+              ? [opts.permissions[permission].allow]
+              : opts.permissions[permission].allow.slice().map(String)
           }
           if (opts.permissions[permission].deny) {
             asset.permissions[permission].deny = isString(opts.permissions[permission].deny)
-              ? [opts.permissions[permission].deny] : opts.permissions[permission].deny.slice()
+              ? [opts.permissions[permission].deny]
+              : opts.permissions[permission].deny.slice().map(String)
+          }
+        } else {
+          asset.permissions[permission] = {
+            allow: [String(opts.permissions[permission])]
+          }
+        }
+
+        if (permission === 'read' &&
+            !asset.permissions[permission].allow) {
+          asset.permissions[permission].allow = [PUBLIC_USER]
+        }
+
+        if ((asset.permissions[permission].allow &&
+            ~asset.permissions[permission].allow.indexOf(PUBLIC_USER)) &&
+            (asset.permissions[permission].deny &&
+            ~asset.permissions[permission].deny.indexOf(PUBLIC_USER))) {
+          asset.permissions[permission].allow.splice(
+            asset.permissions[permission].allow.indexOf(PUBLIC_USER), 1)
+
+          if (!asset.permissions[permission].allow.length) {
+            delete asset.permissions[permission].allow
           }
         }
       })
@@ -75,7 +96,7 @@ function context () {
 
     if (!asset.permissions.read) {
       asset.permissions.read = {
-        allow: ['7']
+        allow: [PUBLIC_USER]
       }
     }
 

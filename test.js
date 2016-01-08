@@ -46,15 +46,45 @@ test('set asset permissions', function (assert) {
       },
       expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     },
+    'set allow default on read permission': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: { deny: '8' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'], deny: ['8'] } } }
+    },
+    'do not allow default on non-read permission': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { write: { deny: '8' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] }, write: { deny: ['8'] } } }
+    },
+    'deny public': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: { deny: '7' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { deny: ['7'] } } }
+    },
     'allow short-hand, single value': {
       test: function (asset) {
         return asset('folder', { name: 'Test', permissions: { read: '7' } })
       },
       expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     },
+    'allow short-hand, single value as Number': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: 7 } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    },
     'allow short-hand, Array value': {
       test: function (asset) {
         return asset('folder', { name: 'Test', permissions: { read: ['7', '8'] } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7', '8'] } } }
+    },
+    'allow short-hand, Array value mixed values': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: [7, '8'] } })
       },
       expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7', '8'] } } }
     },
@@ -78,19 +108,25 @@ test('set asset permissions', function (assert) {
     },
     'cannot set allow and deny on the same value': {
       test: function (asset) {
+        return asset('folder', { name: 'Test', permissions: { read: { allow: ['7', '8'], deny: '7' } } })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['8'], deny: ['7'] } } }
+    },
+    'cannot set allow and deny on the same value, remove empty access value': {
+      test: function (asset) {
         return asset('folder', { name: 'Test', permissions: { read: { allow: '7', deny: '7' } } })
       },
-      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { deny: ['7'] } } }
     }
   }
   var asset
-
-  assert.plan(7)
 
   for (var test in tests) {
     asset = require('./').context()
     assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
   }
+
+  assert.end()
 })
 
 test('set asset link(s)', function (assert) {
