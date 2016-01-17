@@ -25,6 +25,12 @@ function context () {
       opts = {}
     }
 
+    // if both are set assume it's a child asset.
+    if (opts.key && opts.type) {
+      children = opts
+      opts = {}
+    }
+
     asset.type = type
 
     asset.key = _assets.length
