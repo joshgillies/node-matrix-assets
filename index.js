@@ -25,9 +25,14 @@ function context () {
       opts = {}
     }
 
+    if (isArray(opts)) {
+      children = opts
+      opts = {}
+    }
+
     // if both are set assume it's a child asset.
     if (opts.key && opts.type) {
-      children = opts
+      children = [].slice.call(arguments, 1)
       opts = {}
     }
 
