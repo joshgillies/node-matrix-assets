@@ -30,8 +30,10 @@ function context () {
       opts = {}
     }
 
-    // if both are set assume it's a child asset.
-    if (opts.key && opts.type) {
+    if (Object.keys(opts).filter(function (key) {
+      // if both are set assume it's a child asset.
+      return key === 'key' || key === 'type'
+    }).length === 2) {
       children = [].slice.call(arguments, 1)
       opts = {}
     }

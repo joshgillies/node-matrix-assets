@@ -179,7 +179,7 @@ test('set asset link(s)', function (assert) {
 })
 
 test('create children assets', function (assert) {
-  assert.plan(3)
+  assert.plan(5)
 
   var assets = {
     'folder': { name: 'Sites', link: 'type_2' },
@@ -187,6 +187,70 @@ test('create children assets', function (assert) {
   }
 
   var tests = {
+    'optional opts children as array': {
+      test: function (asset) {
+        return asset('folder', [asset('site', assets['site'])])
+      },
+      expected: {
+        key: 1,
+        type: 'folder',
+        link: {
+          type_1: true
+        },
+        children: [
+          {
+            key: 0,
+            type: 'site',
+            name: 'My Site',
+            link: {
+              type_1: true
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
+          }
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
+      }
+    },
+    'optional opts children as arguments': {
+      test: function (asset) {
+        return asset('folder', asset('site', assets['site']))
+      },
+      expected: {
+        key: 1,
+        type: 'folder',
+        link: {
+          type_1: true
+        },
+        children: [
+          {
+            key: 0,
+            type: 'site',
+            name: 'My Site',
+            link: {
+              type_1: true
+            },
+            permissions: {
+              read: {
+                allow: ['7']
+              }
+            }
+          }
+        ],
+        permissions: {
+          read: {
+            allow: ['7']
+          }
+        }
+      }
+    },
     'processed children': {
       test: function (asset) {
         return asset('folder', assets['folder'], asset('site', assets['site']))
