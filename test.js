@@ -38,6 +38,31 @@ test('set asset properties', function (assert) {
   }
 })
 
+test('set asset paths', function (assert) {
+  var tests = {
+    'string case': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', paths: 'test-path' })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, paths: [ 'test-path' ] }
+    },
+    'array case': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', paths: [ 'test_path', 'test-path' ] })
+      },
+      expected: { key: 0, type: 'folder', name: 'Test', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, paths: [ 'test_path', 'test-path' ] }
+    }
+  }
+  var asset
+
+  for (var test in tests) {
+    asset = require('./').context()
+    assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
+  }
+
+  assert.end()
+})
+
 test('set asset permissions', function (assert) {
   var tests = {
     'default case': {

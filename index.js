@@ -46,6 +46,16 @@ function context () {
 
     asset.permissions = {}
 
+    if (opts.paths) {
+      asset.paths = []
+    }
+
+    if (isString(opts.paths)) {
+      asset.paths.push(opts.paths)
+    } else if (isArray(opts.paths)) {
+      mutate(asset.paths, opts.paths)
+    }
+
     if (isString(opts.link)) {
       asset.link[opts.link] = true
     } else if (isArray(opts.link)) {
