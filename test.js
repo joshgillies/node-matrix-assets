@@ -38,6 +38,14 @@ test('set asset properties', function (assert) {
   }
 })
 
+test('set asset attributes', function (assert) {
+  var asset = require('./').context()
+
+  assert.plan(1)
+
+  assert.deepEqual(asset('folder', { attributes: { name: 'test' } }), { key: 0, type: 'folder', attributes: { name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } })
+})
+
 test('set asset paths', function (assert) {
   var tests = {
     'string case': {
