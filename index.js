@@ -8,6 +8,9 @@ var isObject = require('isobject')
 var isFn = require('is-fn')
 
 var PUBLIC_USER = '7'
+var ROOT_ATTRIBUTES = [
+  'name'
+]
 
 function context () {
   var _getAssetFns = []
@@ -45,6 +48,24 @@ function context () {
     asset.link = {}
 
     asset.permissions = {}
+
+    ROOT_ATTRIBUTES.forEach(function (attr) {
+      var val = opts[attr]
+
+      delete opts[attr]
+
+      if (val) {
+        if (!opts.attributes) {
+          opts.attributes = {}
+        }
+
+        if (attr === 'name') {
+          opts.attributes['short_name'] || (opts.attributes['short_name'] = val)
+        }
+
+        opts.attributes[attr] || (opts.attributes[attr] = val)
+      }
+    })
 
     if (opts.paths) {
       asset.paths = []
