@@ -15,7 +15,8 @@
     "tape": "^4.2.0"
   },
   "scripts": {
-    "test": "standard && tape test.js"
+    "pretest": "standard",
+    "test": "tape test.js"
   },
   "repository": {
     "type": "git",
