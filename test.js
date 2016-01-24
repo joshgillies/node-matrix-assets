@@ -39,12 +39,34 @@ test('set asset properties', function (assert) {
 })
 
 test('set asset attributes', function (assert) {
-  var asset = require('./').context()
+  var tests = {
+    'basic case': {
+      test: function (asset) {
+        return asset('folder', { attributes: { name: 'test' } })
+      },
+      expected: { key: 0, type: 'folder', attributes: { name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    },
+    'root level short-hand "name" case': {
+      test: function (asset) {
+        return asset('folder', { name: 'test' })
+      },
+      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    },
+    'root level short-hand "name" case, cannot overwrite set values': {
+      test: function (asset) {
+        return asset('folder', { name: 'Test', attributes: { short_name: 'test' } })
+      },
+      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'Test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+    }
+  }
+  var asset
 
-  assert.plan(1)
+  for (var test in tests) {
+    asset = require('./').context()
+    assert.deepEqual(tests[test].test(asset), tests[test].expected, test)
+  }
 
-  assert.deepEqual(asset('folder', { attributes: { name: 'test' } }), { key: 0, type: 'folder', attributes: { name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } })
-  assert.deepEqual(asset('folder', { name: 'test' }), { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } })
+  assert.end()
 })
 
 test('set asset paths', function (assert) {
