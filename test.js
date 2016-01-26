@@ -56,7 +56,7 @@ test('set asset attributes', function (assert) {
       test: function (asset) {
         return asset('folder', { name: 'Test Folder', attributes: { short_name: 'test' } })
       },
-      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'Test Folder' }, paths: [ 'Test_Folder' ], link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'Test Folder' }, paths: [ 'Test-Folder' ], link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     }
   }
   var asset

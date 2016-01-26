@@ -6,6 +6,7 @@ var mutate = require('xtend/mutable')
 var isArray = require('isarray')
 var isObject = require('isobject')
 var isFn = require('is-fn')
+var slug = require('slug')
 
 var PUBLIC_USER = '7'
 var ROOT_ATTRIBUTES = [
@@ -78,7 +79,7 @@ function context () {
     }
 
     if (opts.attributes && opts.attributes.name) {
-      asset.paths.push(opts.attributes.name.replace(/\s/g, '_'))
+      asset.paths.push(slug(opts.attributes.name))
     }
 
     if (isString(opts.link)) {
