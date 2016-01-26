@@ -67,7 +67,7 @@ function context () {
       }
     })
 
-    if (opts.paths) {
+    if (opts.paths || (opts.attributes && opts.attributes.name)) {
       asset.paths = []
     }
 
@@ -75,6 +75,10 @@ function context () {
       asset.paths.push(opts.paths)
     } else if (isArray(opts.paths)) {
       mutate(asset.paths, opts.paths)
+    }
+
+    if (opts.attributes && opts.attributes.name) {
+      asset.paths.push(opts.attributes.name.replace(/\s/g, '_'))
     }
 
     if (isString(opts.link)) {

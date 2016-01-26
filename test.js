@@ -44,19 +44,19 @@ test('set asset attributes', function (assert) {
       test: function (asset) {
         return asset('folder', { attributes: { name: 'test' } })
       },
-      expected: { key: 0, type: 'folder', attributes: { name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+      expected: { key: 0, type: 'folder', attributes: { name: 'test' }, paths: [ 'test' ], link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     },
     'root level short-hand "name" case': {
       test: function (asset) {
         return asset('folder', { name: 'test' })
       },
-      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'test' }, paths: [ 'test' ], link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     },
     'root level short-hand "name" case, cannot overwrite set values': {
       test: function (asset) {
-        return asset('folder', { name: 'Test', attributes: { short_name: 'test' } })
+        return asset('folder', { name: 'Test Folder', attributes: { short_name: 'test' } })
       },
-      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'Test' }, link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
+      expected: { key: 0, type: 'folder', attributes: { short_name: 'test', name: 'Test Folder' }, paths: [ 'Test_Folder' ], link: { type_1: true }, permissions: { read: { allow: ['7'] } } }
     }
   }
   var asset
@@ -82,6 +82,18 @@ test('set asset paths', function (assert) {
         return asset('folder', { paths: [ 'test_path', 'test-path' ] })
       },
       expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, paths: [ 'test_path', 'test-path' ] }
+    },
+    'set path from name attribute': {
+      test: function (asset) {
+        return asset('folder', { attributes: { name: 'test' } })
+      },
+      expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, attributes: { name: 'test' }, paths: [ 'test' ] }
+    },
+    'add path from name attribute': {
+      test: function (asset) {
+        return asset('folder', { attributes: { name: 'test' }, paths: [ 'test1' ] })
+      },
+      expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, attributes: { name: 'test' }, paths: [ 'test1', 'test' ] }
     }
   }
   var asset
