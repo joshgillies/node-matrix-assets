@@ -79,7 +79,7 @@ function context () {
     }
 
     if (opts.attributes && opts.attributes.name) {
-      asset.paths.push(slug(opts.attributes.name))
+      addNamedPath(slug(opts.attributes.name), asset.paths)
     }
 
     if (isString(opts.link)) {
@@ -246,6 +246,10 @@ function context () {
 
   function isString (str) {
     return typeof str === 'string'
+  }
+
+  function addNamedPath (path, paths) {
+    ~paths.indexOf(path) || paths.push(path)
   }
 }
 

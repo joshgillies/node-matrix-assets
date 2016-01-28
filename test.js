@@ -94,6 +94,12 @@ test('set asset paths', function (assert) {
         return asset('folder', { attributes: { name: 'test' }, paths: [ 'test1' ] })
       },
       expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, attributes: { name: 'test' }, paths: [ 'test1', 'test' ] }
+    },
+    'cannot set duplicate paths': {
+      test: function (asset) {
+        return asset('folder', { attributes: { name: 'test' }, paths: [ 'test' ] })
+      },
+      expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, attributes: { name: 'test' }, paths: [ 'test' ] }
     }
   }
   var asset
