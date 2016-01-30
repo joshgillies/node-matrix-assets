@@ -75,7 +75,9 @@ function context () {
     if (isString(opts.paths)) {
       asset.paths.push(opts.paths)
     } else if (isArray(opts.paths)) {
-      mutate(asset.paths, opts.paths)
+      mutate(asset.paths, opts.paths.filter(function isUnique (item, i, arr) {
+        return arr.indexOf(item) === i
+      }))
     }
 
     if (opts.attributes && opts.attributes.name) {

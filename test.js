@@ -97,7 +97,7 @@ test('set asset paths', function (assert) {
     },
     'cannot set duplicate paths': {
       test: function (asset) {
-        return asset('folder', { attributes: { name: 'test' }, paths: [ 'test' ] })
+        return asset('folder', { attributes: { name: 'test' }, paths: [ 'test', 'test' ] })
       },
       expected: { key: 0, type: 'folder', link: { type_1: true }, permissions: { read: { allow: ['7'] } }, attributes: { name: 'test' }, paths: [ 'test' ] }
     }
