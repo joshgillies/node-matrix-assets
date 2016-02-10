@@ -1,6 +1,6 @@
 {
   "name": "node-matrix-assets",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "A DSL for creating Squiz Matrix asset trees in JavaScript!",
   "main": "index.js",
   "dependencies": {
