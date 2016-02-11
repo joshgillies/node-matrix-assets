@@ -17,12 +17,12 @@ Inspiration for this module is weighted heavily around the excellent work by [Do
 var asset = require('node-matrix-assets')
 var getAssetById = asset.getAssetById
 
-var tree = asset('folder', { name: 'Sites', link: 'type_2' },
+var tree = asset('folder', { name: 'Sites', links: 'type_2' },
   asset('site', { id: 'site', name: 'My Site' },
-    asset('page_standard', { name: 'Home', link: { index: getAssetById('site') } },
-      asset('bodycopy', { link: 'type_2', dependant: '1', exclusive: '1' },
-        asset('bodycopy_div', { link: 'type_2', dependant: '1' },
-          asset('content_type_wysiwyg', { link: 'type_2', dependant: '1', exclusive: '1' })
+    asset('page_standard', { name: 'Home', links: { index: getAssetById('site') } },
+      asset('bodycopy', { links: 'type_2', dependant: '1', exclusive: '1' },
+        asset('bodycopy_div', { links: 'type_2', dependant: '1' },
+          asset('content_type_wysiwyg', { links: 'type_2', dependant: '1', exclusive: '1' })
         )
       )
     )
@@ -49,7 +49,7 @@ keys/values will change depending on the type of asset you're creating.
 
 Assigns a unique identifier to an asset. Typically used in conjunction with [asset.getAssetById].
 
-#### properties.link
+#### properties.links
 
 Default: `'type_1'`. Either a string representing a valid link type (eg. `'type_2'`),
 an Array containing String or Object key/value pairs `['type_2', { notice: 'value' }]`,

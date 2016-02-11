@@ -46,7 +46,7 @@ function context () {
 
     asset.key = _assets.length
 
-    asset.link = {}
+    asset.links = {}
 
     asset.permissions = {}
 
@@ -84,22 +84,22 @@ function context () {
       addNamedPath(slug(opts.attributes.name), asset.paths)
     }
 
-    if (isString(opts.link)) {
-      asset.link[opts.link] = true
-    } else if (isArray(opts.link)) {
-      for (var i = 0; i < opts.link.length; i++) {
-        if (isString(opts.link[i])) {
-          asset.link[opts.link[i]] = true
-        } else if (isObject(opts.link[i])) {
-          mutate(asset.link, opts.link[i])
+    if (isString(opts.links)) {
+      asset.links[opts.links] = true
+    } else if (isArray(opts.links)) {
+      for (var i = 0; i < opts.links.length; i++) {
+        if (isString(opts.links[i])) {
+          asset.links[opts.links[i]] = true
+        } else if (isObject(opts.links[i])) {
+          mutate(asset.links, opts.links[i])
         }
       }
-    } else if (isObject(opts.link)) {
-      mutate(asset.link, opts.link)
+    } else if (isObject(opts.links)) {
+      mutate(asset.links, opts.links)
     }
 
-    if (!(asset.link.type_1 || asset.link.type_2 || asset.link.type_3)) {
-      asset.link['type_1'] = true
+    if (!(asset.links.type_1 || asset.links.type_2 || asset.links.type_3)) {
+      asset.links['type_1'] = true
     }
 
     if (isObject(opts.permissions)) {
@@ -201,7 +201,7 @@ function context () {
           // There's likely a better way to do this.
           // But basically this to prevent deeply nested links of links
           // in cases where assets link between one another.
-          delete asset.link
+          delete asset.links
           delete asset.permissions
 
           flat[prop] = asset
